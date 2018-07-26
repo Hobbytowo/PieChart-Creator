@@ -1,12 +1,12 @@
 // creating required number of slices for fill data (name and value)
 
 const createDataForm = nr => {
+  const chartContainer = document.querySelector('.article--chart')
+  const formContent = document.querySelector('.form__content')
   const sectionDetails = document.querySelector('.section--itemsData')
   sectionDetails.style.display = "block"
 
   const currentNrOfSlices = document.querySelectorAll('.form__slice').length
-
-  const formContent = document.querySelector('.form__content')
 
   if (currentNrOfSlices > nr) {
     formContent.removeChild(formContent.lastChild)
@@ -16,49 +16,23 @@ const createDataForm = nr => {
       const divSlice = document.createElement('div')
       divSlice.classList.add('form__slice')
 
-      const title = document.createElement('h3')
-      title.classList.add('title')
-      title.textContent = `Slice ${ i + 1 }`
+      divSlice.innerHTML = `
+        <h3 class="title">Slice ${ i + 1 }</h3>
+        <divclass="form__data">
+          <label for="inputName${ i }" class="form__label">Name: </label>
+          <input id="inputName${ i }" type="text" class="form__input sliceName"></input>
+        </div>
+        <div class="form__data data data--value">
+          <label for="inputValue${ i }" class="form__label">Value: </label>
+          <input id="inputValue${ i }" type="number" class="form__input sliceValue" placeholder="Write only numbers"></input>
+        </div>
+      `
 
-      const divName = document.createElement('div')
-      divName.classList.add('form__data')
-
-      const labelDataName = document.createElement('label')
-      labelDataName.setAttribute('for', `input${ i }`)
-      labelDataName.innerHTML = `Name: `
-      labelDataName.classList.add('form__label')
-      divName.appendChild(labelDataName)
-
-      const inputDataName = document.createElement('input')
-      inputDataName.setAttribute('type', 'text')
-      inputDataName.setAttribute('id', `input${ i }`)
-      inputDataName.classList.add('form__input', 'sliceName')
-      divName.appendChild(inputDataName)
-
-      const divVal = document.createElement('div')
-      divVal.classList.add('form__Data', 'form__DataVal')
-
-      const labelDataVal = document.createElement('label')
-      labelDataVal.setAttribute('for', `inputVal${ i }`)
-      labelDataVal.innerHTML = `Value: `
-      labelDataVal.classList.add('form__label')
-      divVal.appendChild(labelDataVal)
-
-      const inputDataVal = document.createElement('input')
-      inputDataVal.setAttribute('type', 'text')
-      inputDataVal.setAttribute('id', `inputVal${ i }`)
-      inputDataVal.setAttribute('placeholder', 'Write only numbers')
-      inputDataVal.classList.add('form__input', 'sliceValue')
-      divVal.appendChild(inputDataVal)
-
-      divSlice.appendChild(title)
-      divSlice.appendChild(divName)
-      divSlice.appendChild(divVal)
       formContent.appendChild(divSlice)
     }
   }
 
-  if (currentNrOfSlices <= nr) {
+  if (currentNrOfSlices <= nr && chartContainer.style.display === "flex") {
     drawPieChart()
   }
 }
@@ -72,26 +46,7 @@ buttonMainData.addEventListener('click', () => {
   createDataForm(chosenOption.selectedIndex + 2)
 })
 
-// validation value inputs asynchronous (event delegation)
-
-const formContent = document.querySelector('.form__content')
-
-formContent.addEventListener('keyup', e => {
-  if (e.target.parentElement.classList[1] === 'form__DataVal') {
-    let text = e.target.value
-    let isValid = (/^\d{1,}\.{0,1}\d{0,}$/.test(text))
-
-    e.target.classList.remove('inputValue--valid')
-    e.target.formNoValidate = false
-
-    if (isValid === false) {
-      e.target.classList.add('inputValue--valid')
-      e.target.formNoValidate = true
-    }
-  }
-})
-
-// function to creating chart
+// creating chart
 
 const drawPieChart = () => {
   const chartContainer = document.querySelector('.article--chart')
@@ -211,10 +166,14 @@ const drawPieChart = () => {
 const buttonCreateChart = document.querySelector('.button--createChart')
 
 buttonCreateChart.addEventListener('click', () => {
-  const areValueInputsValid = document.querySelector('.inputValue--valid') === null
+  const valueInputs = document.querySelectorAll('.sliceValue')
+  let dataValues = []
 
-  if (areValueInputsValid) {
-    console.log('areValueInputsValid - draw')
+  valueInputs.forEach(input => {
+    dataValues.push(input.valueAsNumber)
+  })
+
+  if (dataValues.every(x => !isNaN(x))) {
     drawPieChart()
   }
 })

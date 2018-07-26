@@ -69,6 +69,7 @@
     padding: 7px;
     margin: 10px;
     border-radius: 5px;
+    width: 160px;
   }
   &__select{
     padding: 7px 15px;
@@ -101,12 +102,6 @@
     border-radius: 10px;
     background-color: #72B3EB;
   }
-}
-
-// Validating select - number of items
-
-.inputValue--valid{
-  border: 2px solid red;
 }
 
 // Pie chart
