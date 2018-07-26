@@ -1,7 +1,7 @@
 {
-  "name": "boilerplatenew",
+  "name": "Pie Chart Creator",
   "version": "1.0.0",
-  "description": "boilerplate",
+  "description": "App to create pie charts with own properties",
   "main": "index.js",
   "dependencies": {
     "@babel/core": "^7.0.0-beta.46",
