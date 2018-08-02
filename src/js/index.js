@@ -109,6 +109,12 @@ const getData = () => {
   dataArr.sort((a, b) => a.value - b.value).reverse()
   const addColorToArr = arr => arr.map((x, i) => (x.color = colors[i]))
   addColorToArr(dataArr)
+
+  const percentageSum = percentage.reduce((a, b) => a * 1 + b * 1, 0)
+  if (percentageSum !== 100) {
+    dataArr[0].percent += 100 - percentageSum
+  }
+
   return dataArr
 }
 
@@ -160,17 +166,10 @@ const createPieChart = () => {
       newCircle.textContent = `Name: ${ data.name }, Value: ${ data.value }, Percent: ${ data.percent }%`
       svg.appendChild(newCircle)
     } else {
-      if (i === 0) {
-        svg.style.background = dataArr[dataArr.length - 1].color
-      }
       const newPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       newPath.setAttributeNS(null, 'd', `M${ radius },${ radius } L${ radius },0 A${ radius },${ radius } ${ sweep } 1,1 ${ valueX }, ${ valueY } z`)
       newPath.setAttributeNS(null, 'fill', data.color)
-      if (i !== dataArr.length - 1) {
-        newPath.setAttributeNS(null, 'transform', `rotate(${ rotation }, ${ radius }, ${ radius })`)
-      } else {
-        newPath.setAttributeNS(null, 'transform', `rotate(-${ deg }, ${ radius }, ${ radius })`)
-      }
+      newPath.setAttributeNS(null, 'transform', `rotate(${ rotation }, ${ radius }, ${ radius })`)
 
       rotation += deg
       newPath.textContent = `Name: ${ data.name }, Value: ${ data.value }, Percent: ${ data.percent }%`
