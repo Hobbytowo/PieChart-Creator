@@ -46,32 +46,31 @@ buttonMainData.addEventListener('click', () => {
   createDataForm(chosenOption.selectedIndex + 2)
 })
 
+// function gettings inputs values
+
+const getValues = inputsClass => {
+  const dataNames = document.querySelectorAll(`.${ inputsClass }`)
+  let dataNamesArr = []
+
+  dataNames.forEach(input => {
+    dataNamesArr.push(input.value)
+  })
+
+  return dataNamesArr
+}
+
 // creating chart
 
 const drawPieChart = () => {
   const chartContainer = document.querySelector('.article--chart')
   chartContainer.style.display = "flex"
 
-  // sending title
   const chartTitle = document.querySelector('#chartTitle').value
   const titleContainer = document.querySelector('.title--chart')
   titleContainer.textContent = chartTitle
 
-  // getting data
-
-  const dataNamesLabels = document.querySelectorAll('.sliceName')
-  let dataNames = []
-
-  dataNamesLabels.forEach(label => {
-    dataNames.push(label.value)
-  })
-
-  const dataValuesLabels = document.querySelectorAll('.sliceValue')
-  let dataValues = []
-
-  dataValuesLabels.forEach(label => {
-    dataValues.push(label.value)
-  })
+  const dataNames = getValues('sliceName')
+  const dataValues = getValues('sliceValue')
   const numberOfValues = dataValues.length
   const leadingColor = document.querySelector('.input--color').value
 
@@ -166,12 +165,7 @@ const drawPieChart = () => {
 const buttonCreateChart = document.querySelector('.button--createChart')
 
 buttonCreateChart.addEventListener('click', () => {
-  const valueInputs = document.querySelectorAll('.sliceValue')
-  let dataValues = []
-
-  valueInputs.forEach(input => {
-    dataValues.push(input.valueAsNumber)
-  })
+  const dataValues = getValues('sliceValue')
 
   if (dataValues.every(x => !isNaN(x))) {
     drawPieChart()
