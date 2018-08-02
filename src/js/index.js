@@ -18,13 +18,13 @@ const createDataForm = nr => {
 
       divSlice.innerHTML = `
         <h3 class="title">Slice ${ i + 1 }</h3>
-        <div="form__data">
+        <div class="form__data">
           <label for="inputName${ i }" class="form__label">Name: </label>
           <input id="inputName${ i }" type="text" class="form__input sliceName">
         </div>
         <div class="form__data data data--value">
           <label for="inputValue${ i }" class="form__label">Value: </label>
-          <input id="inputValue${ i }" type="number" class="form__input sliceValue" placeholder="Write only numbers">
+          <input id="inputValue${ i }" type="number" min="0" class="form__input sliceValue" placeholder="Write only numbers">
         </div>
       `
 
@@ -109,7 +109,6 @@ const getData = () => {
   dataArr.sort((a, b) => a.value - b.value).reverse()
   const addColorToArr = arr => arr.map((x, i) => (x.color = colors[i]))
   addColorToArr(dataArr)
-
   return dataArr
 }
 
@@ -150,24 +149,33 @@ const createPieChart = () => {
 
   const drawSlice = (data, i) => {
     const [deg, sweep, valueX, valueY] = calculateRatios(data.percent)
+    const svg = document.querySelector('.svg')
 
-    if (i === 0) {
-      const svg = document.querySelector('.svg')
-      svg.style.background = dataArr[dataArr.length - 1].color
-    }
-
-    const newPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-    newPath.setAttributeNS(null, 'fill', data.color)
-    newPath.setAttributeNS(null, 'd', `M${ radius },${ radius } L${ radius },0 A${ radius },${ radius } ${ sweep } 1,1 ${ valueX }, ${ valueY } z`)
-    newPath.textContent = `Name: ${ data.name }, Value: ${ data.value }, Percent: ${ data.percent }%`
-    if (i !== dataArr.length - 1) {
-      newPath.setAttributeNS(null, 'transform', `rotate(${ rotation }, ${ radius }, ${ radius })`)
+    if (data.percent === 100) {
+      const newCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+      newCircle.setAttributeNS(null, 'cx', `${ radius }`)
+      newCircle.setAttributeNS(null, 'cy', `${ radius }`)
+      newCircle.setAttributeNS(null, 'r', `${ radius }`)
+      newCircle.setAttributeNS(null, 'fill', data.color)
+      newCircle.textContent = `Name: ${ data.name }, Value: ${ data.value }, Percent: ${ data.percent }%`
+      svg.appendChild(newCircle)
     } else {
-      newPath.setAttributeNS(null, 'transform', `rotate(-${ deg }, ${ radius }, ${ radius })`)
-    }
+      if (i === 0) {
+        svg.style.background = dataArr[dataArr.length - 1].color
+      }
+      const newPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      newPath.setAttributeNS(null, 'd', `M${ radius },${ radius } L${ radius },0 A${ radius },${ radius } ${ sweep } 1,1 ${ valueX }, ${ valueY } z`)
+      newPath.setAttributeNS(null, 'fill', data.color)
+      if (i !== dataArr.length - 1) {
+        newPath.setAttributeNS(null, 'transform', `rotate(${ rotation }, ${ radius }, ${ radius })`)
+      } else {
+        newPath.setAttributeNS(null, 'transform', `rotate(-${ deg }, ${ radius }, ${ radius })`)
+      }
 
-    rotation += deg
-    svg.appendChild(newPath)
+      rotation += deg
+      newPath.textContent = `Name: ${ data.name }, Value: ${ data.value }, Percent: ${ data.percent }%`
+      svg.appendChild(newPath)
+    }
   }
 
   for (let i = 0; i < dataArr.length; i++) {
@@ -181,8 +189,7 @@ const buttonCreateChart = document.querySelector('.button--createChart')
 
 buttonCreateChart.addEventListener('click', () => {
   const dataValues = getValues('sliceValue')
-
-  dataValues.every(x => !isNaN(x)) && createPieChart()
+  dataValues.every(x => !isNaN(x) && x > 0) && createPieChart()
 })
 
 // Tooltip
@@ -190,8 +197,8 @@ buttonCreateChart.addEventListener('click', () => {
 const svg = document.querySelector('.svg')
 const tooltip = document.querySelector('.tooltip')
 
-svg.addEventListener('mousemove', (e) => {
-  if (e.target.nodeName === 'path') {
+svg.addEventListener('mousemove', e => {
+  if (e.target.nodeName === 'path' || e.target.nodeName === 'circle') {
     tooltip.style.left = `${ e.clientX + 20 }px`
     tooltip.style.top = `${ e.clientY - 30 }px`
     tooltip.style.display = 'block'
@@ -199,8 +206,8 @@ svg.addEventListener('mousemove', (e) => {
   }
 })
 
-svg.addEventListener('mouseout', (e) => {
-  if (e.target.nodeName === 'path') {
+svg.addEventListener('mouseout', e => {
+  if (e.target.nodeName === 'path' || e.target.nodeName === 'circle') {
     tooltip.style.display = 'none'
   }
 })
