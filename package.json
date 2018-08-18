@@ -2,6 +2,7 @@
   "name": "Pie Chart Creator",
   "version": "1.0.0",
   "description": "App to create pie charts with own properties",
+  "homepage": "https://hobbytowo.github.io/PieChart-Creator/",
   "main": "index.js",
   "dependencies": {
     "@babel/core": "^7.0.0-beta.46",
@@ -35,6 +36,6 @@
     "> 0.05%",
     "IE 10"
   ],
-  "author": "Weronika Kędziora",
-  "license": "ISC"
+  "author": "Weronika Kędziora <wkedziora13@gmail.com>",
+  "license": "MIT"
 }
