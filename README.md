@@ -18,13 +18,27 @@ In second form (after click on 'OK' button):
 - you have to write slice's values (only positive numbers)
 
 After create chart, you can modify all properties.
+Hover mouse over chart slice showing tooltip with information about this slice.
 
 ## Built with
 - HTML5
-- SCSS (RWD, flexbox)
+- SASS (RWD, flexbox)
 - JavaScrpit
 - SVG
+
+## Setup
+
+``` bash
+# install dependencies
+$ npm install
+
+# serve with hot reload
+$ gulp watch
+```
 
 ## Sources
 - ColorPicker from http://jscolor.com/
 - Font from https://fonts.google.com/
+
+## License
+- MIT © [Weronika Kędziora ](https://github.com/Hobbytowo)
